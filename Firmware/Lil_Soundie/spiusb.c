@@ -229,24 +229,26 @@ void puthex (u_int16 a)
   fputs (tmp, stdout);
 }
 
-void PrintCache ()
-{
-  register u_int16 i;
-  for (i = 0; i < CACHE_BLOCKS; i++)
-  {
-    if (blockPresent & 1 << i)
-    {
-      puthex (blockAddress[i]);
-    }
-    else
-    {
-      fputs ("- ", stdout);
-    }
-  }
-  puts ("=cache");
-}
+#define PrintCache()
+// void PrintCache ()
+// {
+//   register u_int16 i;
+//   for (i = 0; i < CACHE_BLOCKS; i++)
+//   {
+//     if (blockPresent & 1 << i)
+//     {
+//       puthex (blockAddress[i]);
+//     }
+//     else
+//     {
+//       fputs ("- ", stdout);
+//     }
+//   }
+//   puts ("=cache");
+// }
 
 #define do__not__puts(x) puts(x)
+// #define do__not__puthex(a)
 #define do__not__puthex(x) puthex(x)
 #else
 #define do__not__puts(a)
@@ -551,8 +553,8 @@ u_int16 WriteContinuous4K ()
         if (blockAddress[i + k] != blockAddress[i] + k)
           goto ohi;
       }
-      do__not__puthex (blockAddress[i]);
-      do__not__puts (" starts continuous 4K ");
+      // do__not__puthex (blockAddress[i]);
+      // do__not__puts (" starts continuous 4K ");
 
       if (-1 != EeProgram4K (blockAddress[i], mallocAreaY + 256 * i))
       {
@@ -619,7 +621,7 @@ struct FsMapper *FsMapSpiFlashCreate (struct FsPhysical *physical,
                                       u_int16 cacheSize)
 {
 
-  do__not__puts ("CREATE");
+  // do__not__puts ("CREATE");
   InitSpi (SPI_CLOCK_DIVIDER);
   blockPresent = 0;
   shouldFlush = 0;
@@ -788,12 +790,12 @@ s_int16 FsMapSpiFlashFlush (struct FsMapper * map, u_int16 hard)
 auto void MyMassStorage (void)
 {
   register __b0 int usbMode = 0;
-  do__not__puts ("MyMassStorage");
+  // do__not__puts ("MyMassStorage");
 
   voltages[voltCoreUSB] = 31; // 30:ok
   voltages[voltIoUSB] = 31; // set maximum IO voltage (about 3.6V)
-  do__not__puthex (voltages[voltCoreUSB]);
-  do__not__puts ("=USB Core Voltage");  // default:27
+  // do__not__puthex (voltages[voltCoreUSB]);
+  // do__not__puts ("=USB Core Voltage");  // default:27
   PowerSetVoltages (&voltages[voltCoreUSB]);
   BusyWait10 ();
   LoadCheck (NULL, 1);  /* Set 48 MHz Clock */
@@ -801,9 +803,9 @@ auto void MyMassStorage (void)
 
   SetHookFunction ((u_int16) InitUSBDescriptors, MyInitUSBDescriptors);
 
-  do__not__puts ("before usb init");
+  // do__not__puts ("before usb init");
   InitUSB (USB_MASS_STORAGE);
-  do__not__puts ("after usb init");
+  // do__not__puts ("after usb init");
 
   while (USBIsAttached ())
   {
@@ -881,9 +883,9 @@ void main (void)
     // When USB is attached, go to mass storage handler
     if (USBIsAttached ())
     {
-      do__not__puts ("MassStorage");
+      // do__not__puts ("MassStorage");
       MyMassStorage ();
-      do__not__puts ("From MassStorage");
+      // do__not__puts ("From MassStorage");
     }
     // puts("Test");
 
@@ -908,8 +910,10 @@ void main (void)
       player.nextFile = 0;
       while (1)
       {
+        /* start playing immediately */
         // Check the current pin settings
-        GPIOCtrlIdleHook ();
+        // GPIOCtrlIdleHook ();
+        player.currentFile = player.nextFile;
 
         // If current file is empty play silence
         while (player.currentFile == 0xffffU)
@@ -933,15 +937,19 @@ void main (void)
             register s_int16 oldStep = player.nextStep;
             register s_int16 ret;
 
-            do__not__puts ("Current playing file");
-            do__not__puthex (player.currentFile);
-            do__not__puts ("");
+            // do__not__puts ("Current playing file");
+            // do__not__puthex (player.currentFile);
+            // do__not__puts ("");
             ret = PLAYFILE ();  // Decode and Play.
-            do__not__puts ("Player return value");
-            do__not__puthex (ret);
-            do__not__puts ("");
+            // do__not__puts ("Player return value");
+            // do__not__puthex (ret);
+            // do__not__puts ("");
             // See separate examples about keyboard handling.
           }
+
+          /* loop on the last file */
+          player.currentFile = player.nextFile = 1;
+          // player.pauseOn = 0;
         }
         else
         {
