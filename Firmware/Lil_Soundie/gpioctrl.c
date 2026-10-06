@@ -48,6 +48,9 @@ void puthex (u_int16 a);
    */
 
 #define GPIO_MASK       0x001f  // Sel. file w/ GPIO0 pins in the mask
+
+#define USE_POWERBUTTON 1       // actually shut down
+
 //#define GPIO_INVERTED   //default state is HIGH, buttons bring low
 //#define GPIO_PRIORITIES 0x04ff // Sel. file w/ GPIO0 pins, lower has priority
 
