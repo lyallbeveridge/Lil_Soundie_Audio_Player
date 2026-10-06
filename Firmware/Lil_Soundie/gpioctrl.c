@@ -47,6 +47,7 @@ void puthex (u_int16 a);
    See system.h for GPIO_NUMBERED_FILES definition
    */
 
+/* "Pin 05 is there in case you want to reprogram the VS1000D to change the playback functions." */
 #define GPIO_MASK       0x001f  // Sel. file w/ GPIO0 pins in the mask
 
 #define USE_POWERBUTTON 1       // actually shut down
@@ -107,6 +108,8 @@ void GPIOCtrlIdleHook (void)
       PERIP (GPIO0_CLEAR_MASK) = GPIO_MASK;
       PERIP (GPIO0_SET_MASK) = GPIO_MASK & GPIO0_PULLUPS;
       PERIP (GPIO0_DDR) |= GPIO_MASK; // Drive to 0
+
+      /* because the volatile keyword is used, this is a weird method of delaying. */
       for (mask = 0; mask < 10000; mask++)
         USEX (0);
       PERIP (GPIO0_DDR) &= ~GPIO_MASK;  // To inputs
