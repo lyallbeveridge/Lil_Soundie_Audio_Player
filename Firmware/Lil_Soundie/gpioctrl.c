@@ -71,7 +71,7 @@ void GPIOCtrlIdleHook (void)
   {
     uiTrigger = 0;
 
-    /* 
+    /*
      * If you want the default firmware key-controls, use KeyScan(); */
 
 #ifdef GPIO0_PLAYING_INDICATOR
@@ -187,7 +187,7 @@ void GPIOCtrlIdleHook (void)
       /* about 0.2 sec */
       if (keyOld == SCISTF_REGU_POWERBUT && ++keyOldTime >= 3)
       {
-          RealPowerOff ();
+        RealPowerOff ();
       }
       else
       {
